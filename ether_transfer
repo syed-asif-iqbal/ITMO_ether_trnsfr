@@ -2,21 +2,19 @@
 
 #Sending ether form one account to another
 
-
-#Check geth location
-ETH=$(which geth 2>/dev/null)   
+   
 verify_geth() {
     STATUS=""
-    if [ -z $ETH ] && [ ! "$(ps -A | grep ether*)" ];  
+    if [[ ! "$(ps -A | grep ether*)" ]];  
     then
-        STATUS="You need to install Ethereum CLI based on GoLang, or run Ethereum Wallet App"
+        STATUS="run Ethereum Wallet App"
     else 
         STATUS="OK"
     fi
     echo $STATUS
 }
 
-#Run ETHER server
+#Run ETHER server - DELETE
 execute_server() {
     # execute eth and redirect all output to /dev/null
     if ! $ETH --testnet --exec 'console.log("OK")' attach 2&>/dev/null  
@@ -36,7 +34,7 @@ execute_server() {
         echo $URL,$PID
     fi
 }
-
+######
 
 #Unlock user account and send certain number of 'ether' 
 send(){
@@ -45,18 +43,13 @@ RECEIVER=$2
 AMOUNT=$3
 PASSWORD=$4
 
-if [[ -z  $ETH ]];
-    then
+
    	./geth --exec "personal.unlockAccount('$SENDER', '$PASSWORD')" attach > /dev/null
         TRANSACTION=`./geth --testnet --fast -exec "eth.sendTransaction({from: '$SENDER', to: '$RECEIVER', value: web3.toWei('$AMOUNT', 'ether')})" attach`
         echo $TRANSACTION
 
-else
-	$ETH --exec "personal.unlockAccount('$SENDER', '$PASSWORD')" attach > /dev/null
-	TRANSACTION=`$ETH --testnet --fast -exec "eth.sendTransaction({from: '$SENDER', to: '$RECEIVER', value: web3.toWei('$AMOUNT', 'ether')})" attach`
-	echo $TRANSACTION
-fi
 
+}
 #Help
 help () {
     printf "Script: "$0" provides the possibility to send ether from one account to another\n"
@@ -78,11 +71,6 @@ if [[ $STATUS != *"OK" ]] || $([ ! -z $1 ] && [ $1 = "-s" ]);
         exit 
 fi
 
-#Start server if Ethereum app is not running
-if [ ! "$(ps -A | grep ether*)" ];
-	then
-	    SERVER=$(execute_server)
-	fi
 
 if [ ! -z $1 ];
     then
