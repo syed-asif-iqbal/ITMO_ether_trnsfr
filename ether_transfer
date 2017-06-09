@@ -14,27 +14,7 @@ verify_geth() {
     echo $STATUS
 }
 
-#Run ETHER server - DELETE
-execute_server() {
-    # execute eth and redirect all output to /dev/null
-    if ! $ETH --testnet --exec 'console.log("OK")' attach 2&>/dev/null  
-    then
-        # run eth webserver 
-        $ETH --testnet --ws --fast 2&> /tmp/wallet-server.log & 
-        # get server process PID
-        PID=`jobs -p`
-        echo $1
-        # until webserver is not created look for it
-        until grep -q 'WebSocket endpoint opened:' /tmp/wallet-server.log
-        do
-            sleep 3
-        done
-        # save the URL of server for future requests
-        URL=`grep 'WebSocket endpoint opened:'  /tmp/wallet-server.log | sed 's/^.*WebSocket endpoint opened: //'`
-        echo $URL,$PID
-    fi
-}
-######
+
 
 #Unlock user account and send certain number of 'ether' 
 send(){
