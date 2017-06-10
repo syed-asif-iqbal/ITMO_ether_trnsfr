@@ -5,7 +5,7 @@
    
 verify_geth() {
     STATUS=""
-    if [[ ! "$(ps -A | grep ether*)" ]];  
+    if [[ ! "$(ps -A | grep ether)" ]];  
     then
         STATUS="run Ethereum Wallet App"
     else 
